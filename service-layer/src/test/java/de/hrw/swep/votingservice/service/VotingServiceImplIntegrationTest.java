@@ -167,7 +167,7 @@ public class VotingServiceImplIntegrationTest {
 
 	@Test
 	public void testDeleteNullQuestion() {
-		try {
+		try {   
 			votingService.deleteQuestion(null);
 		} catch (IllegalStateException e) {
 			assertEquals("Null is not a question that could be deleted.",
