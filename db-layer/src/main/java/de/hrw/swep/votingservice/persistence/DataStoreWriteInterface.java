@@ -32,6 +32,7 @@ public interface DataStoreWriteInterface {
 	 * 
 	 */
 	void deleteVotes(int id);
+	//uhcdhsabcdsfcb
 
 	/**
 	 * 
