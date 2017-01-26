@@ -35,26 +35,21 @@ public class VotingServiceImplIntegrationTest {
 	VotingServiceInterface votingService;
 
 	private final boolean[] questionsStates = { false, false, false, true, true };
-	private final double[] questionsTotalResults = { 2.33333325, 4.66666650,
-			4.66666650, 3.33333325, 4.666667 };
+	private final double[] questionsTotalResults = { 2.33333325, 4.66666650, 4.66666650, 3.33333325, 4.666667 };
 
-	// id of question in database is its position in this array
-	private final String[] questionsDescriptions = { "",
-			"Mögen Sie Schokoeis?",
-			"Wie finden Sie Sommerwetter mit blauem Himmel und 37 Grad?",
-			"Wie finden Sie Games of Thrones?",
+	private final String[] questionsDescriptions = { "", "Mögen Sie Schokoeis?",
+			"Wie finden Sie Sommerwetter mit blauem Himmel und 37 Grad?", "Wie finden Sie Games of Thrones?",
 			"Trinken Sie gerne Softdrinks?", "Mögen Sie Wassersport?" };
 
 	/**
 	 * @throws java.lang.Exception
 	 */
+
 	@Before
 	public void setUp() throws Exception {
-		IDatabaseTester databaseTester = new JdbcDatabaseTester(
-				"org.hsqldb.jdbcDriver", CONNECTION_STRING, DB_USER,
+		IDatabaseTester databaseTester = new JdbcDatabaseTester("org.hsqldb.jdbcDriver", CONNECTION_STRING, DB_USER,
 				DB_PASSWORD);
-		databaseTester.setDataSet(new FlatXmlDataSetBuilder().build(new File(
-				"..\\db-layer\\full.xml")));
+		databaseTester.setDataSet(new FlatXmlDataSetBuilder().build(new File("..\\db-layer\\full.xml")));
 		databaseTester.onSetup();
 
 		RealDatabase db = new RealDatabase(true);
@@ -92,10 +87,8 @@ public class VotingServiceImplIntegrationTest {
 
 		boolean found = false;
 		for (Question question : questions) {
-			assertEquals(questionsDescriptions[question.getId()],
-					question.getDescription());
-			assertEquals(questionsStates[question.getId() - 1],
-					question.isOpenForVoting());
+			assertEquals(questionsDescriptions[question.getId()], question.getDescription());
+			assertEquals(questionsStates[question.getId() - 1], question.isOpenForVoting());
 			if (question.getId() == 5) {
 				try {
 					@SuppressWarnings("unused")
@@ -105,8 +98,7 @@ public class VotingServiceImplIntegrationTest {
 					assertEquals("No votes.", e.getMessage());
 				}
 			} else {
-				assertEquals(questionsTotalResults[question.getId() - 1],
-						question.getAverageVote(), 0.0000002);
+				assertEquals(questionsTotalResults[question.getId() - 1], question.getAverageVote(), 0.0000002);
 				if (question.getId() == 4) {
 					found = true;
 					assertTrue(checkVotes(question.getVotes()));
@@ -126,8 +118,8 @@ public class VotingServiceImplIntegrationTest {
 		for (Question question : questions) {
 			if (question.getId() == 4) {
 				found = true;
-				newQuestion = new Question(question.getId(), "new question",
-						question.isOpenForVoting(), question.getVotes());
+				newQuestion = new Question(question.getId(), "new question", question.isOpenForVoting(),
+						question.getVotes());
 			}
 		}
 		assertTrue(found);
@@ -141,10 +133,7 @@ public class VotingServiceImplIntegrationTest {
 				found = true;
 				assertEquals("new question", question.getDescription());
 				assertTrue(question.isOpenForVoting());
-
-				// check votes en detail
-				assertEquals(questionsTotalResults[4 - 1],
-						question.getAverageVote(), 0.0000002);
+				assertEquals(questionsTotalResults[4 - 1], question.getAverageVote(), 0.0000002);
 				List<Integer> votes = question.getVotes();
 				assertEquals(3, votes.size());
 				checkVotes(votes);
@@ -161,17 +150,14 @@ public class VotingServiceImplIntegrationTest {
 		votingService.deleteQuestion(question);
 		assertEquals(4, votingService.getAllQuestions().size());
 
-
-	
 	}
 
 	@Test
 	public void testDeleteNullQuestion() {
-		try {   
+		try {
 			votingService.deleteQuestion(null);
 		} catch (IllegalStateException e) {
-			assertEquals("Null is not a question that could be deleted.",
-					e.getMessage());
+			assertEquals("Null is not a question that could be deleted.", e.getMessage());
 			return;
 		}
 		fail();
